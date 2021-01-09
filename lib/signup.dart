@@ -31,10 +31,11 @@ class _SignUpPageState extends State<SignUpPage> {
           .createUserWithEmailAndPassword(
           email: emailInputController.text,
           password: pwdInputController.text)
-          .then((currentUser) => databaseReference.child("users")
+          .then((currentUser) => databaseReference.child("users/${currentUser.user.uid}")
           .set({
         "email": emailInputController.text,
-        "username":username.text
+        "username":username.text,
+        "notes":[{"title":"temp","description":"temp"}]
       })
           .then((result) => {
         Navigator.pushReplacement(

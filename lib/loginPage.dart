@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
 import 'Widget/bezierContainer.dart';
-
+import 'Notes.dart';
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
 
@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
         // _success = true;
         // _userEmail = user.email;
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => QuizApp()));
+            context, MaterialPageRoute(builder: (context) => NotesPage(auth: _auth,user: user,)));
       });
     } else {
       setState(() {
