@@ -153,7 +153,7 @@ class _NotesPageState extends State<NotesPage> {
                     background: ClipRRect(
                       borderRadius: BorderRadius.circular(5.5),
                       child: Container(
-                        color: Colors.green,
+                        color: Colors.purple,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
@@ -178,7 +178,7 @@ class _NotesPageState extends State<NotesPage> {
                     secondaryBackground: ClipRRect(
                       borderRadius: BorderRadius.circular(5.5),
                       child: Container(
-                        color: Colors.red,
+                        color: Colors.cyan,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Padding(
