@@ -16,7 +16,7 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   var _formKey = GlobalKey<FormState>();
-  var total_notes;
+  var total_notes=0;
 
   final databaseReference = FirebaseDatabase.instance.reference();
   // total_notes=databaseReference.child("users/${widget.user.uid}/notes/")
@@ -24,10 +24,11 @@ class _NotesPageState extends State<NotesPage> {
     // print(widget.user.uid);
     var snapshot = await databaseReference.child("users/${widget.user.uid}/notes/");
     snapshot.once().then((DataSnapshot snapshot){
+      // print(snapshot.value);
       total_notes  = snapshot.value.length;
-      // if(total_notes==1){
-      //   total_notes=0;
-      // }
+      if(total_notes==0){
+        total_notes=1;
+      }
     });
     return true;
   }
@@ -57,7 +58,7 @@ class _NotesPageState extends State<NotesPage> {
       body: buildNotes(),
       floatingActionButton: FloatingActionButton(
         mini: false,
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.blueAccent,
         onPressed: () {
           _settingModalBottomSheet(context);
         },
@@ -82,10 +83,9 @@ class _NotesPageState extends State<NotesPage> {
               !snap.hasError &&
               snap.data.snapshot.value != null) {
             // print(snap.data.snapshot.value);
-            List data = snap.data.snapshot.value;
+            Map data = snap.data.snapshot.value;
             print(data);
-            print(data.length);
-            // List item = [];
+            List item = [];
 
             // data.forEach(
             //         (index, data) => item.add({"key": index, ...data}));
@@ -94,14 +94,15 @@ class _NotesPageState extends State<NotesPage> {
             return ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, int index) {
-                return data[index]!=null?Padding(
+                String key = data.keys.elementAt(index);
+                return Padding(
                   padding: const EdgeInsets.only(bottom: 5.5),
                   child: new Dismissible(
                     key: UniqueKey(),
                     direction: DismissDirection.horizontal,
                     onDismissed: (direction) {
                       setState(() {
-                        databaseReference.child("users/${widget.user.uid}/notes/${index}").remove();
+                        databaseReference.child("users/${widget.user.uid}/notes/${key}").remove();
                         // deletedNoteHeading = noteHeading[index];
                         // deletedNoteDescription = noteDescription[index];
                         // noteHeading.removeAt(index);
@@ -192,9 +193,9 @@ class _NotesPageState extends State<NotesPage> {
                         ),
                       ),
                     ),
-                    child: noteList(data[index]["title"],data[index]["description"],index),
+                    child: noteList(data[key]["title"],data[key]["description"],index),
                   ),
-                ):SizedBox(height: 0,);
+                );
               },
             );
           } else
@@ -314,7 +315,7 @@ class _NotesPageState extends State<NotesPage> {
                                 setState(() {
                                   getnotes_length();
                                   print(total_notes);
-                                  databaseReference.child("users/${widget.user.uid}/notes/${total_notes}")
+                                  databaseReference.child("users/${widget.user.uid}/notes/${"id_"+total_notes.toString()}")
                                       .update({
                                     "title": noteHeadingController.text,
                                     "description":noteDescriptionController.text
@@ -334,7 +335,7 @@ class _NotesPageState extends State<NotesPage> {
                                     "Save",
                                     style: TextStyle(
                                       fontSize: 20.00,
-                                      color: Colors.orange,
+                                      color: Colors.blue,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -345,7 +346,7 @@ class _NotesPageState extends State<NotesPage> {
                         ],
                       ),
                       Divider(
-                        color: Colors.black,
+                        color: Colors.blueAccent,
                         thickness: 2.5,
                       ),
                       TextFormField(
@@ -424,15 +425,15 @@ Widget notesHeader() {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "All Notes",
+          "My Notes",
           style: TextStyle(
-            color: Colors.orange,
+            color: Colors.blueAccent,
             fontSize: 25.00,
             fontWeight: FontWeight.w500,
           ),
         ),
         Divider(
-          color: Colors.black,
+          color: Colors.blueAccent,
           thickness: 2.5,
         ),
       ],
@@ -440,6 +441,68 @@ Widget notesHeader() {
   );
 }
 
+
+//
+//
+// ListView.builder(
+// // padding: EdgeInsets.symmetric(horizontal: 50),
+// itemCount: data.length,
+// itemBuilder: (context, index) {
+// return Column(
+//
+// children:[
+// index>0?SizedBox(height: 20,):SizedBox(height: 0,),
+// Text("Semester ${index+1}",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold), ),
+// SingleChildScrollView(
+//
+// child: DataTable(
+// horizontalMargin: 5,
+// // columnSpacing: 500,
+// showBottomBorder: true,
+// dividerThickness: 1,
+// headingRowColor:
+// MaterialStateColor.resolveWith((states) => Colors.blue),
+// showCheckboxColumn: false,
+// columns: [
+// // DataColumn(label: Text(
+// //     'Code',
+// //     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)
+// // )),
+// DataColumn(label: Text(
+// 'Name',
+// style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)
+// )),
+// DataColumn(label: Text(
+// 'Credit',
+// style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+// textAlign: TextAlign.center,
+// )),
+// DataColumn(
+//
+// label: Text(
+// 'Marks',
+// style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+// textAlign: TextAlign.center,
+// )),
+// DataColumn(
+// label: Text(
+// 'GP',
+// style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+// textAlign: TextAlign.center,
+// )),
+// ],
+// rows: List.generate(
+// data['Semester ${index+1}'].length-1, (index_) => _getDataRow(data['Semester ${index+1}'][index_])),
+// ),
+// scrollDirection: my_axis.Axis.horizontal,
+//
+// ),
+//
+// Text("CGPA: ${data['Semester ${index+1}'].last['CGPA']}",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+// ]
+// );
+// },
+// ),
 
 
 
