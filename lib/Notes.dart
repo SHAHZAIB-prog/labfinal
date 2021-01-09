@@ -345,7 +345,7 @@ class _NotesPageState extends State<NotesPage> {
                         ],
                       ),
                       Divider(
-                        color: Colors.orange,
+                        color: Colors.black,
                         thickness: 2.5,
                       ),
                       TextFormField(
@@ -432,7 +432,7 @@ Widget notesHeader() {
           ),
         ),
         Divider(
-          color: Colors.orange,
+          color: Colors.black,
           thickness: 2.5,
         ),
       ],
